@@ -1,13 +1,22 @@
 import streamlit as st
 from utils.audio_utils import record_audio
-from stt.stt_engine import transcribe
+from utils.diarized_transcript import generate_diarized_transcript
+
+AUDIO_FILE = "meeting.wav"
 
 st.title("🎙️ AI Live Meeting Summarizer")
 
-if st.button("Record 15 Seconds"):
-    record_audio("meeting.wav", duration=15)
-    st.success("Recording done!")
+st.markdown("### Controls")
 
-if st.button("Transcribe"):
-    text = transcribe("meeting.wav")
-    st.text_area("Transcription", text, height=200)
+if st.button("🎤 Record 15 Seconds"):
+    with st.spinner("Recording..."):
+        record_audio(AUDIO_FILE, duration=15)
+    st.success("Recording completed!")
+
+if st.button("🧠 Generate Diarized Transcript"):
+    with st.spinner("Processing audio..."):
+        diarized_output = generate_diarized_transcript(AUDIO_FILE)
+
+    st.markdown("## 👥 Diarized Transcript")
+    for line in diarized_output:
+        st.write(line)
