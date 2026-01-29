@@ -1,4 +1,8 @@
 import streamlit as st
+from utils.text_cleaner import clean_and_merge_transcript
+from utils.summarizer import generate_summary
+from utils.action_items import extract_action_items
+
 from utils.audio_utils import record_audio
 from utils.diarized_transcript import generate_diarized_transcript
 
@@ -20,3 +24,20 @@ if st.button("🧠 Generate Diarized Transcript"):
     st.markdown("## 👥 Diarized Transcript")
     for line in diarized_output:
         st.write(line)
+
+    cleaned_lines = clean_and_merge_transcript(diarized_output)
+    cleaned_text = " ".join(cleaned_lines)
+
+    st.subheader("📄 Cleaned Transcript")
+    st.text(cleaned_text)
+
+    summary = generate_summary(cleaned_text)
+
+    st.subheader("🧠 Meeting Summary")
+    st.write(summary)
+
+    actions = extract_action_items(cleaned_text)
+
+    st.subheader("✅ Action Items")
+    for a in actions:
+        st.write("- ", a)
